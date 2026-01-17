@@ -1,11 +1,15 @@
 # logic.py
 import yfinance as yf
 import pandas_ta as ta
+import pandas as pd
 
 def get_signal(ticker):
     # 1. Fetch Data (1 Year of Daily Data)
     df = yf.download(ticker, period="1y", interval="1d", progress=False)
     
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+
     if len(df) < 20: return None # Not enough data
 
     # 2. Calculate Indicators
